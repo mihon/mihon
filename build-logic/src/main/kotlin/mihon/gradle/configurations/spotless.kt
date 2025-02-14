@@ -1,10 +1,9 @@
 /*
- * Copyright (C) 2024-Present AntsyLich and Mihon Open Source Project contributors
+ * Copyright (C) 2024-2025 AntsyLich and The Mihon Authors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
- * by the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * by the Free Software Foundation, version 3.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,6 +12,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
  */
 package mihon.gradle.configurations
 
@@ -34,13 +35,14 @@ fun Project.configureSpotless() {
         kotlin {
             target("src/**/*.kt")
             ktlint(ktlintVersion)
-            licenseHeaderFile(rootProject.file("spotless/copyright.kt"))
+            licenseHeaderFile(rootProject.file("spotless/copyright.kt")).updateYearWithLatest(true)
         }
 
         kotlinGradle {
             target("*.gradle.kts")
             ktlint(ktlintVersion)
             licenseHeaderFile(rootProject.file("spotless/copyright.kt"), "(^(?![\\/ ]\\**).*$)")
+                .updateYearWithLatest(true)
         }
     }
 }
