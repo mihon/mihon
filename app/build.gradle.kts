@@ -77,4 +77,7 @@ dependencies {
     implementation(compose.material3)
 
     implementation(libs.androidx.activity.compose)
+    implementation(libs.koin.androidx.startup)
+    implementation(libs.koin.androidx.workmanager)
+    implementation(libs.koin.core)
 }

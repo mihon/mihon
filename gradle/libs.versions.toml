@@ -4,11 +4,15 @@ android-gradle = "8.8.0"
 androidx-activity-compose = "1.10.0"
 compose-multiplatform = "1.7.3"
 kotlin = "2.1.10"
+koin = "4.0.2"
 ktlint = "1.5.0"
 spotless = "7.0.2"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
+koin-androidx-startup = { module = "io.insert-koin:koin-androidx-startup", version.ref = "koin" }
+koin-androidx-workmanager = { module = "io.insert-koin:koin-androidx-workmanager", version.ref = "koin" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 
 # Used in [/build-logic/src/main/kotlin/mihon/gradle/configurations]
 android-desugar = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "android-desugar" }
