@@ -69,6 +69,11 @@ android {
     buildFeatures {
         shaders = false
     }
+    packaging {
+        jniLibs {
+            keepDebugSymbols += "**/libandroidx.graphics.path.so"
+        }
+    }
 }
 
 dependencies {
