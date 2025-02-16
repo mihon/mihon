@@ -3,6 +3,7 @@ android-desugar = "2.1.4"
 android-gradle = "8.8.0"
 androidx-activity-compose = "1.10.0"
 compose-multiplatform = "1.7.3"
+datastore = "1.1.2"
 kotlin = "2.1.10"
 koin = "4.0.2"
 ktlint = "1.5.0"
@@ -10,6 +11,7 @@ spotless = "7.0.2"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
+datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastore" }
 koin-androidx-startup = { module = "io.insert-koin:koin-androidx-startup", version.ref = "koin" }
 koin-androidx-workmanager = { module = "io.insert-koin:koin-androidx-workmanager", version.ref = "koin" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
