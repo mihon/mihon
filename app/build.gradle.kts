@@ -77,6 +77,7 @@ android {
 }
 
 dependencies {
+    implementation(projects.core.preference)
     implementation(projects.core.ui)
 
     implementation(compose.foundation)
