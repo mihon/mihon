@@ -20,29 +20,44 @@ package mihon.core.preference.internal
 import androidx.datastore.preferences.core.Preferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import mihon.core.preference.Preference
+import kotlin.time.Duration.Companion.seconds
 
 internal class DataStorePreference<T>(
-    private val delegate: StateFlow<Map<Preferences.Key<*>, Any>>,
+    private val dataStateFlow: StateFlow<Preferences>,
     private val key: Preferences.Key<T>,
     private val defaultValue: T,
-    private val
+    private val setValue: (T?) -> Unit,
 ) : Preference<T> {
+    private val data inline get() = dataStateFlow.value
+
     override fun key(): String {
         return key.name
     }
 
     override fun get(): T {
-        TODO("Not yet implemented")
+        return try {
+            data[key] ?: defaultValue
+        } catch (_: ClassCastException) {
+            delete()
+            defaultValue
+        }
+    }
+
+    override fun set(value: T) {
+        setValue(value)
     }
 
     override fun isSet(): Boolean {
-        return delegate.value.containsKey(key)
+        return data.contains(key)
     }
 
     override fun delete() {
-        TODO("Not yet implemented")
+        setValue(null)
     }
 
     override fun defaultValue(): T {
@@ -50,14 +65,17 @@ internal class DataStorePreference<T>(
     }
 
     override fun changes(): Flow<T> {
-        TODO("Not yet implemented")
+        return dataStateFlow.map {
+            try {
+                it[key] ?: defaultValue
+            } catch (_: ClassCastException) {
+                delete()
+                defaultValue
+            }
+        }
     }
 
     override fun stateIn(scope: CoroutineScope): StateFlow<T> {
-        TODO("Not yet implemented")
-    }
-
-    override fun set(value: T) {
-        TODO("Not yet implemented")
+        return changes().stateIn(scope, SharingStarted.WhileSubscribed(5.seconds.inWholeMilliseconds), get())
     }
 }

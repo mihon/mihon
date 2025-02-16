@@ -26,6 +26,9 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.datastore.preferences.core)
         }
+        desktopMain.dependencies {
+            implementation(libs.appdirs)
+        }
     }
 }
 

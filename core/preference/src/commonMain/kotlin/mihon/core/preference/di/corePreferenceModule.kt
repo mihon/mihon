@@ -6,6 +6,6 @@ import mihon.core.preference.internal.Constants
 import org.koin.dsl.module
 
 val corePreferenceModule = module {
-    preferenceStoreFactory()
-    single<PreferenceStore> { get<PreferenceStoreFactory>().get(Constants.DEFAULT_PREFERENCE_STORE) }
+    single<PreferenceStoreFactory> { preferenceStoreFactory() }
+    single<PreferenceStore> { get<PreferenceStoreFactory>().default() }
 }

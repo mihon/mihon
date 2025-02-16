@@ -18,5 +18,7 @@
 package mihon.core.preference
 
 interface PreferenceStoreFactory {
+    fun default(): PreferenceStore
+
     fun get(name: String): PreferenceStore
 }
