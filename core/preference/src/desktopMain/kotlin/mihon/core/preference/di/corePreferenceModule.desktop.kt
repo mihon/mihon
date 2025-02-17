@@ -15,8 +15,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-package mihon.core.preference.internal
+package mihon.core.preference.di
 
-internal object Constants {
-    const val PREFERENCES_FILE_NAME = "mihon"
+import com.russhwolf.settings.Settings
+import org.koin.core.scope.Scope
+
+internal actual fun Scope.settingsFactory(): Settings.Factory {
+    TODO("Not yet implemented")
 }
