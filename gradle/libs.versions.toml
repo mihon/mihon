@@ -1,5 +1,5 @@
 [versions]
-android-desugar = "2.1.4"
+android-desugar = "2.1.5"
 android-gradle = "8.8.0"
 androidx-activity-compose = "1.10.0"
 compose-multiplatform = "1.7.3"
