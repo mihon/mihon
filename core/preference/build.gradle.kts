@@ -23,10 +23,11 @@ plugins {
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation(libs.coroutines.core)
             implementation(libs.koin.core)
-            implementation(libs.settings)
-            implementation(libs.settings.coroutines)
+            implementation(libs.datastore.preferences.core)
+        }
+        desktopMain.dependencies {
+            implementation(libs.appdirs)
         }
     }
 }

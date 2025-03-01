@@ -17,17 +17,11 @@
  */
 package mihon.core.preference.di
 
-import com.russhwolf.settings.Settings
 import mihon.core.preference.PreferenceStore
 import mihon.core.preference.PreferenceStoreFactory
-import mihon.core.preference.internal.PreferenceStoreFactoryImpl
-import org.koin.core.scope.Scope
 import org.koin.dsl.module
 
 val corePreferenceModule = module {
-    single<Settings.Factory> { settingsFactory() }
-    single<PreferenceStoreFactory> { PreferenceStoreFactoryImpl(get()) }
+    single<PreferenceStoreFactory> { preferenceStoreFactory() }
     single<PreferenceStore> { get<PreferenceStoreFactory>().default() }
 }
-
-internal expect fun Scope.settingsFactory(): Settings.Factory
