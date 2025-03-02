@@ -22,8 +22,7 @@ import androidx.datastore.preferences.core.Preferences
 import kotlinx.cinterop.ExperimentalForeignApi
 import mihon.core.preference.PreferenceStore
 import mihon.core.preference.PreferenceStoreFactory
-import mihon.core.preference.internal.Constants
-import mihon.core.preference.internal.DataStorePreferenceStore
+import mihon.core.preference.datastore.DataStorePreferenceStore
 import okio.FileSystem
 import okio.Path.Companion.toPath
 import org.koin.core.scope.Scope

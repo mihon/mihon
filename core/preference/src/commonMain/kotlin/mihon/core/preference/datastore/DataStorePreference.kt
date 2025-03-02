@@ -15,37 +15,45 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-package mihon.core.preference.internal
+package mihon.core.preference.datastore
 
-import androidx.datastore.preferences.core.Preferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.stateIn
 import mihon.core.preference.Preference
-import kotlin.time.Duration.Companion.seconds
 
 internal class DataStorePreference<T>(
-    private val dataStateFlow: StateFlow<Preferences>,
-    private val key: Preferences.Key<T>,
+    override val key: String,
     private val defaultValue: T,
+    private val getValue: () -> T,
+    private val getValueFlow: () -> Flow<T>,
+    private val isValueSet: () -> Boolean,
     private val setValue: (T?) -> Unit,
 ) : Preference<T> {
-    private val data inline get() = dataStateFlow.value
-
-    override fun key(): String {
-        return key.name
-    }
 
     override fun get(): T {
         return try {
-            data[key] ?: defaultValue
+            getValue()
         } catch (_: ClassCastException) {
             delete()
             defaultValue
         }
+    }
+
+    override fun getFlow(): Flow<T> {
+        return getValueFlow().catch { e ->
+            if (e !is ClassCastException) throw e
+
+            delete()
+            emit(defaultValue)
+        }
+    }
+
+    override fun getStateFlow(scope: CoroutineScope, started: SharingStarted): StateFlow<T> {
+        return getFlow().stateIn(scope, started, get())
     }
 
     override fun set(value: T) {
@@ -53,29 +61,10 @@ internal class DataStorePreference<T>(
     }
 
     override fun isSet(): Boolean {
-        return data.contains(key)
+        return isValueSet()
     }
 
     override fun delete() {
         setValue(null)
-    }
-
-    override fun defaultValue(): T {
-        return defaultValue
-    }
-
-    override fun changes(): Flow<T> {
-        return dataStateFlow.map {
-            try {
-                it[key] ?: defaultValue
-            } catch (_: ClassCastException) {
-                delete()
-                defaultValue
-            }
-        }
-    }
-
-    override fun stateIn(scope: CoroutineScope): StateFlow<T> {
-        return changes().stateIn(scope, SharingStarted.WhileSubscribed(5.seconds.inWholeMilliseconds), get())
     }
 }

@@ -18,12 +18,12 @@
 package mihon.core.preference.di
 
 import android.content.Context
+import android.preference.PreferenceManager
 import androidx.datastore.core.DataMigration
 import androidx.datastore.preferences.core.Preferences
 import mihon.core.preference.PreferenceStore
 import mihon.core.preference.PreferenceStoreFactory
-import mihon.core.preference.internal.Constants
-import mihon.core.preference.internal.DataStorePreferenceStore
+import mihon.core.preference.datastore.DataStorePreferenceStore
 import okio.Path.Companion.toOkioPath
 import org.koin.core.scope.Scope
 
@@ -32,6 +32,11 @@ internal actual fun Scope.preferenceStoreFactory(): PreferenceStoreFactory {
 }
 
 private class PreferenceStoreFactoryImpl(context: Context) : PreferenceStoreFactory {
+
+    init {
+        PreferenceManager.getDefaultSharedPreferences()
+    }
+
     val preferencesDir = context.filesDir
         .resolve("preferences")
         .apply { mkdirs() }

@@ -15,44 +15,37 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-package mihon.core.preference.di
+package mihon.core.preference.datastore
 
 import androidx.datastore.core.DataMigration
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
-import ca.gosyer.appdirs.AppDirs
 import mihon.core.preference.PreferenceStore
 import mihon.core.preference.PreferenceStoreFactory
-import mihon.core.preference.datastore.DataStorePreferenceStore
-import okio.Path.Companion.toPath
-import org.koin.core.scope.Scope
+import okio.Path
 
-internal actual fun Scope.preferenceStoreFactory(): PreferenceStoreFactory {
-    return PreferenceStoreFactoryImpl()
-}
-
-private class PreferenceStoreFactoryImpl : PreferenceStoreFactory {
-    val preferencesDir = AppDirs("Mihon", "Mihon")
-        .getUserConfigDir(roaming = true)
-        .toPath()
+class DataStorePreferenceStoreFactory(private val preferencesDirectory: Path): PreferenceStoreFactory {
 
     override fun default(): PreferenceStore {
-        return internalGet(Constants.PREFERENCES_FILE_NAME)
+        return internalGet(DEFAULT_NAME)
     }
 
     override fun get(name: String): PreferenceStore {
-        require(name != Constants.PREFERENCES_FILE_NAME) {
-            "Custom preference store name can't be '${Constants.PREFERENCES_FILE_NAME}'"
-        }
-        return internalGet(name)
+        return internalGet("_$name")
     }
 
     private fun internalGet(
         name: String,
         migrations: List<DataMigration<Preferences>> = listOf(),
     ): PreferenceStore {
-        return createPreferencesDataStore(migrations = migrations) {
-            preferencesDir.resolve("$name.pb")
-        }
+        return PreferenceDataStoreFactory.createWithPath(
+            migrations = migrations,
+            produceFile = { preferencesDirectory.resolve("$name.preferences_pb") },
+        )
             .let { DataStorePreferenceStore(it) }
+    }
+
+    companion object {
+        private const val DEFAULT_NAME = "mihon"
     }
 }

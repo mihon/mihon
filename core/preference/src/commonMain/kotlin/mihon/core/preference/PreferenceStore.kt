@@ -38,23 +38,12 @@ interface PreferenceStore {
         deserializer: (String) -> T,
     ): Preference<T>
 
-    fun getAll(): Map<String, *>
-}
+    fun <T> getObjectSet(
+        key: String,
+        defaultValue: Set<T>,
+        serializer: (T) -> String,
+        deserializer: (String) -> T,
+    ): Preference<Set<T>>
 
-inline fun <reified T : Enum<T>> PreferenceStore.getEnum(
-    key: String,
-    defaultValue: T,
-): Preference<T> {
-    return getObject(
-        key = key,
-        defaultValue = defaultValue,
-        serializer = { it.name },
-        deserializer = {
-            try {
-                enumValueOf(it)
-            } catch (e: IllegalArgumentException) {
-                defaultValue
-            }
-        },
-    )
+    fun getAll(): Map<String, Any>
 }
