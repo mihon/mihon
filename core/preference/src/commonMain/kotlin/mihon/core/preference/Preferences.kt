@@ -17,7 +17,13 @@
  */
 package mihon.core.preference
 
-interface PreferenceStore {
+interface Preferences {
+
+    interface Factory {
+        fun default(migrations: List<PreferenceMigration>): Preferences
+
+        fun named(name: String, migrations: List<PreferenceMigration>): Preferences
+    }
 
     fun getString(key: String, defaultValue: String = ""): Preference<String>
 

@@ -20,9 +20,8 @@ package mihon.core.preference.di
 import androidx.datastore.core.DataMigration
 import androidx.datastore.preferences.core.Preferences
 import kotlinx.cinterop.ExperimentalForeignApi
-import mihon.core.preference.PreferenceStore
-import mihon.core.preference.PreferenceStoreFactory
-import mihon.core.preference.datastore.DataStorePreferenceStore
+import mihon.core.preference.Preferences
+import mihon.core.preference.datastore.DataStorePreferences
 import okio.FileSystem
 import okio.Path.Companion.toPath
 import org.koin.core.scope.Scope
@@ -30,11 +29,11 @@ import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSUserDomainMask
 
-internal actual fun Scope.preferenceStoreFactory(): PreferenceStoreFactory {
-    return PreferenceStoreFactoryImpl()
+internal actual fun Scope.preferenceStoreFactory(): mihon.core.preference.Preferences.Factory {
+    return PreferencesFactoryImpl()
 }
 
-private class PreferenceStoreFactoryImpl : PreferenceStoreFactory {
+private class PreferencesFactoryImpl : mihon.core.preference.Preferences.Factory {
     @OptIn(ExperimentalForeignApi::class)
     val preferencesDir = NSFileManager.defaultManager.URLForDirectory(
         directory = NSDocumentDirectory,
@@ -48,11 +47,11 @@ private class PreferenceStoreFactoryImpl : PreferenceStoreFactory {
         ?.resolve("preferences")!!
         .also { FileSystem.SYSTEM.createDirectories(it, mustCreate = false) }
 
-    override fun default(): PreferenceStore {
+    override fun default(): mihon.core.preference.Preferences {
         return internalGet(Constants.PREFERENCES_FILE_NAME)
     }
 
-    override fun get(name: String): PreferenceStore {
+    override fun get(name: String): mihon.core.preference.Preferences {
         require(name != Constants.PREFERENCES_FILE_NAME) {
             "Custom preference store name can't be '${Constants.PREFERENCES_FILE_NAME}'"
         }
@@ -62,10 +61,10 @@ private class PreferenceStoreFactoryImpl : PreferenceStoreFactory {
     private fun internalGet(
         name: String,
         migrations: List<DataMigration<Preferences>> = listOf(),
-    ): PreferenceStore {
+    ): mihon.core.preference.Preferences {
         return createPreferencesDataStore(migrations = migrations) {
             preferencesDir.resolve("$name.pb")
         }
-            .let { DataStorePreferenceStore(it) }
+            .let { DataStorePreferences(it) }
     }
 }

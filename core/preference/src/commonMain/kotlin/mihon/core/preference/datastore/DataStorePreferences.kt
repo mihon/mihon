@@ -18,7 +18,6 @@
 package mihon.core.preference.datastore
 
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
@@ -30,23 +29,28 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import mihon.core.preference.Preference
-import mihon.core.preference.PreferenceStore
+import mihon.core.preference.Preferences
+import androidx.datastore.preferences.core.Preferences as AndroidXPreferences
 
-class DataStorePreferenceStore(private val store: DataStore<Preferences>) : PreferenceStore {
+fun stateFlow(value: AndroidXPreferences) = MutableStateFlow(value).asStateFlow()
+
+class DataStorePreferences(private val store: DataStore<AndroidXPreferences>) : Preferences {
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val dataStateFlow = store.data.stateIn(
         scope = scope,
         started = SharingStarted.Lazily,
         initialValue = runBlocking(scope.coroutineContext) { store.data.first() },
     )
-    private val data: Preferences inline get() = dataStateFlow.value
+    private val data: AndroidXPreferences inline get() = dataStateFlow.value
 
     override fun getString(key: String, defaultValue: String): Preference<String> =
         getBuiltin(stringPreferencesKey(key), defaultValue)
@@ -66,7 +70,7 @@ class DataStorePreferenceStore(private val store: DataStore<Preferences>) : Pref
     override fun getStringSet(key: String, defaultValue: Set<String>): Preference<Set<String>> =
         getBuiltin(stringSetPreferencesKey(key), defaultValue)
 
-    private fun <T> getBuiltin(key: Preferences.Key<T>, defaultValue: T): Preference<T> {
+    private fun <T> getBuiltin(key: AndroidXPreferences.Key<T>, defaultValue: T): Preference<T> {
         return DataStorePreference(
             key = key.name,
             defaultValue = defaultValue,

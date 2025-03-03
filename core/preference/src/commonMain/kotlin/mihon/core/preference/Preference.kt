@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlin.time.Duration.Companion.seconds
 
 interface Preference<T> {
+
     val key: String
 
     fun get(): T

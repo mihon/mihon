@@ -1,7 +1,7 @@
 package mihon.core.preference
 
 interface PreferenceMigration {
-    suspend fun shouldMigrate(store: PreferenceStore) {
+    fun shouldMigrate(currentData: Preferences): Boolean
 
-    }
+    fun migrate(currentData: Preferences): Preferences
 }

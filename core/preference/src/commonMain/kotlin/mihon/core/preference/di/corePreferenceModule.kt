@@ -17,11 +17,10 @@
  */
 package mihon.core.preference.di
 
-import mihon.core.preference.PreferenceStore
-import mihon.core.preference.PreferenceStoreFactory
+import mihon.core.preference.Preferences
 import org.koin.dsl.module
 
 val corePreferenceModule = module {
-    single<PreferenceStoreFactory> { preferenceStoreFactory() }
-    single<PreferenceStore> { get<PreferenceStoreFactory>().default() }
+    single<PreferencesFactory> { preferenceStoreFactory() }
+    single<Preferences> { get<PreferencesFactory>().default() }
 }
