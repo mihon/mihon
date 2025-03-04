@@ -15,21 +15,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-package mihon.app
+package mihon.core.preference.di
 
-import android.app.Application
-import mihon.core.preference.di.corePreferenceModule
-import org.koin.android.ext.koin.androidContext
-import org.koin.androidx.workmanager.koin.workManagerFactory
-import org.koin.androix.startup.KoinStartup
-import org.koin.core.annotation.KoinExperimentalAPI
-import org.koin.dsl.KoinConfiguration
+import android.content.Context
+import okio.Path
+import okio.Path.Companion.toOkioPath
+import org.koin.core.scope.Scope
 
-@OptIn(KoinExperimentalAPI::class)
-class Mihon : Application(), KoinStartup {
-    override fun onKoinStartup() = KoinConfiguration {
-        androidContext(this@Mihon)
-        workManagerFactory()
-        modules(corePreferenceModule)
-    }
+internal actual fun Scope.preferenceDirectory(): Path {
+    return get<Context>().filesDir
+        .resolve("preferences")
+        .toOkioPath()
 }

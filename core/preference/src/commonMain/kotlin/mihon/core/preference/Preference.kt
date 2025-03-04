@@ -15,21 +15,29 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-package mihon.app
+package mihon.core.preference
 
-import android.app.Application
-import mihon.core.preference.di.corePreferenceModule
-import org.koin.android.ext.koin.androidContext
-import org.koin.androidx.workmanager.koin.workManagerFactory
-import org.koin.androix.startup.KoinStartup
-import org.koin.core.annotation.KoinExperimentalAPI
-import org.koin.dsl.KoinConfiguration
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlin.time.Duration.Companion.seconds
 
-@OptIn(KoinExperimentalAPI::class)
-class Mihon : Application(), KoinStartup {
-    override fun onKoinStartup() = KoinConfiguration {
-        androidContext(this@Mihon)
-        workManagerFactory()
-        modules(corePreferenceModule)
-    }
+interface Preference<T> {
+
+    val key: String
+
+    fun get(): T
+
+    fun set(value: T)
+
+    fun getFlow(): Flow<T>
+
+    fun getStateFlow(scope: CoroutineScope, started: SharingStarted = defaultStarted): StateFlow<T>
+
+    fun isSet(): Boolean
+
+    fun delete()
 }
+
+private val defaultStarted = SharingStarted.WhileSubscribed(5.seconds.inWholeMilliseconds)

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 AntsyLich and The Mihon Authors
+ * Copyright (C) 2025 AntsyLich and The Mihon Authors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -15,36 +15,23 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-pluginManagement {
-    includeBuild("build-logic")
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
+plugins {
+    alias(mihon.plugins.android.library)
+    alias(mihon.plugins.kotlin.multiplatform)
 }
 
-dependencyResolutionManagement {
-    @Suppress("UnstableApiUsage")
-    repositories {
-        google()
-        mavenCentral()
-    }
-    versionCatalogs {
-        create("mihon") {
-            from(files("gradle/mihon.versions.toml"))
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation(libs.koin.core)
+            implementation(libs.datastore.preferences.core)
+        }
+        desktopMain.dependencies {
+            implementation(libs.appdirs)
         }
     }
 }
 
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version "0.9.0"
+android {
+    namespace = "mihon.core.preference"
 }
-
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
-
-rootProject.name = "Mihon"
-include(":app")
-
-include(":core:preference")
-include(":core:ui")
