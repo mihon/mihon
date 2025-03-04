@@ -18,47 +18,13 @@
 package mihon.core.preference.di
 
 import android.content.Context
-import android.preference.PreferenceManager
-import androidx.datastore.core.DataMigration
-import androidx.datastore.preferences.core.Preferences
 import mihon.core.preference.Preferences
-import mihon.core.preference.datastore.DataStorePreferences
+import okio.Path
 import okio.Path.Companion.toOkioPath
 import org.koin.core.scope.Scope
 
-internal actual fun Scope.preferenceStoreFactory(): mihon.core.preference.Preferences.Factory {
-    return PreferencesFactoryImpl(get<Context>())
-}
-
-private class PreferencesFactoryImpl(context: Context) : mihon.core.preference.Preferences.Factory {
-
-    init {
-        PreferenceManager.getDefaultSharedPreferences()
-    }
-
-    val preferencesDir = context.filesDir
+internal actual fun Scope.preferenceDirectory(): Path {
+    return get<Context>().filesDir
         .resolve("preferences")
-        .apply { mkdirs() }
         .toOkioPath()
-
-    override fun default(): mihon.core.preference.Preferences {
-        return internalGet(Constants.PREFERENCES_FILE_NAME)
-    }
-
-    override fun get(name: String): mihon.core.preference.Preferences {
-        require(name != Constants.PREFERENCES_FILE_NAME) {
-            "Custom preference store name can't be '${Constants.PREFERENCES_FILE_NAME}'"
-        }
-        return internalGet(name)
-    }
-
-    private fun internalGet(
-        name: String,
-        migrations: List<DataMigration<Preferences>> = listOf(),
-    ): mihon.core.preference.Preferences {
-        return createPreferencesDataStore(migrations = migrations) {
-            preferencesDir.resolve("$name.pb")
-        }
-            .let { DataStorePreferences(it) }
-    }
 }

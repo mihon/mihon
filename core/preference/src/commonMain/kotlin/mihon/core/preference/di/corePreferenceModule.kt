@@ -21,6 +21,6 @@ import mihon.core.preference.Preferences
 import org.koin.dsl.module
 
 val corePreferenceModule = module {
-    single<PreferencesFactory> { preferenceStoreFactory() }
-    single<Preferences> { get<PreferencesFactory>().default() }
+    single<Preferences.Factory> { preferenceStoreFactory() }
+    single<Preferences> { get<Preferences.Factory>().default(emptyList()) }
 }

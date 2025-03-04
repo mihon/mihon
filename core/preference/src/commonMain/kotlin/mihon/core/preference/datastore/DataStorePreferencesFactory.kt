@@ -36,23 +36,28 @@ class DataStorePreferencesFactory(private val preferencesDirectory: Path): Prefe
 
     private fun get(name: String, migrations: List<PreferenceMigration>): Preferences {
         return PreferenceDataStoreFactory.createWithPath(
-            migrations = listOf(object : DataMigration<AndroidXPreferences> {
-                override suspend fun cleanUp() {
-                    TODO("Not yet implemented")
-                }
-
-                override suspend fun shouldMigrate(currentData: AndroidXPreferences): Boolean {
-                    TODO("Not yet implemented")
-                }
-
-                override suspend fun migrate(currentData: AndroidXPreferences): AndroidXPreferences {
-                    TODO("Not yet implemented")
-                }
-
-            }),
+            migrations = migrations.map { it.toPreferenceDataMigration() },
             produceFile = { preferencesDirectory.resolve("$name.preferences_pb") },
         )
             .let { DataStorePreferences(it) }
+    }
+
+    private fun PreferenceMigration.toPreferenceDataMigration(): DataMigration<AndroidXPreferences> {
+        return object : DataMigration<AndroidXPreferences> {
+            override suspend fun shouldMigrate(currentData: AndroidXPreferences): Boolean {
+                return this@toPreferenceDataMigration.shouldMigrate(MigrationDataStorePreferences(currentData))
+            }
+
+            override suspend fun migrate(currentData: AndroidXPreferences): AndroidXPreferences {
+                val delegate = MigrationDataStorePreferences(currentData)
+                this@toPreferenceDataMigration.migrate(delegate)
+                return delegate.getAndroidXPreferences()
+            }
+
+            override suspend fun cleanUp() {
+                this@toPreferenceDataMigration.cleanup()
+            }
+        }
     }
 
     companion object {

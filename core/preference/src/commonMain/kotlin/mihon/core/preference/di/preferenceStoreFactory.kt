@@ -19,19 +19,14 @@ package mihon.core.preference.di
 
 import androidx.datastore.core.DataMigration
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
-import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.PreferenceDataS
+import mihon.core.preference.Preferences
+import mihon.core.preference.datastore.DataStorePreferencesFactory
 import okio.Path
 import org.koin.core.scope.Scope
 
-internal expect fun Scope.preferenceStoreFactory(): PreferencesFactory
-
-internal fun createPreferencesDataStore(
-    migrations: List<DataMigration<Preferences>> = listOf(),
-    produceFile: () -> Path,
-): DataStore<Preferences> {
-    return PreferenceDataStoreFactory.createWithPath(
-        migrations = migrations,
-        produceFile = produceFile,
-    )
+internal fun Scope.preferenceStoreFactory(): Preferences.Factory {
+    return DataStorePreferencesFactory(preferenceDirectory())
 }
+
+internal expect fun Scope.preferenceDirectory(): Path
