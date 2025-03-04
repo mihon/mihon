@@ -20,11 +20,11 @@ package mihon.core.preference.datastore
 import androidx.datastore.core.DataMigration
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import mihon.core.preference.PreferenceMigration
-import androidx.datastore.preferences.core.Preferences as AndroidXPreferences
 import mihon.core.preference.Preferences
 import okio.Path
+import androidx.datastore.preferences.core.Preferences as AndroidXPreferences
 
-class DataStorePreferencesFactory(private val preferencesDirectory: Path): Preferences.Factory {
+class DataStorePreferencesFactory(private val preferencesDirectory: Path) : Preferences.Factory {
 
     override fun default(migrations: List<PreferenceMigration>): Preferences {
         return get(DEFAULT_NAME, migrations)

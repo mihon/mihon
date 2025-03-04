@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2025 AntsyLich and The Mihon Authors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 package mihon.core.preference.datastore
 
 import androidx.datastore.preferences.core.Preferences
@@ -42,7 +59,7 @@ internal abstract class BaseDataStorePreferences : mihon.core.preference.Prefere
             getValue = { data[key] ?: defaultValue },
             getValueFlow = { dataStateFlow.map { it[key] ?: defaultValue } },
             setValue = { setValue(key, it) },
-            isValueSet = { data.contains(key) }
+            isValueSet = { data.contains(key) },
         )
     }
 
@@ -59,7 +76,7 @@ internal abstract class BaseDataStorePreferences : mihon.core.preference.Prefere
             getValue = { data[delegateKey]?.let(deserializer) ?: defaultValue },
             getValueFlow = { dataStateFlow.map { it[delegateKey]?.let(deserializer) ?: defaultValue } },
             setValue = { setValue(delegateKey, it?.let(serializer)) },
-            isValueSet = { data.contains(delegateKey) }
+            isValueSet = { data.contains(delegateKey) },
         )
     }
 
@@ -67,7 +84,7 @@ internal abstract class BaseDataStorePreferences : mihon.core.preference.Prefere
         key: String,
         defaultValue: Set<T>,
         serializer: (T) -> String,
-        deserializer: (String) -> T
+        deserializer: (String) -> T,
     ): Preference<Set<T>> {
         val delegateKey = stringSetPreferencesKey(key)
         return DataStorePreference(
@@ -76,7 +93,7 @@ internal abstract class BaseDataStorePreferences : mihon.core.preference.Prefere
             getValue = { data[delegateKey]?.mapToSet(deserializer) ?: defaultValue },
             getValueFlow = { dataStateFlow.map { it[delegateKey]?.mapToSet(deserializer) ?: defaultValue } },
             setValue = { setValue(delegateKey, it?.mapToSet(serializer)) },
-            isValueSet = { data.contains(delegateKey) }
+            isValueSet = { data.contains(delegateKey) },
         )
     }
 

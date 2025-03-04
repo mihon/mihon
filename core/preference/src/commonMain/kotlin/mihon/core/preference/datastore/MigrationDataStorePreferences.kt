@@ -17,10 +17,10 @@
  */
 package mihon.core.preference.datastore
 
-import androidx.datastore.preferences.core.MutablePreferences as AndroidXMutablePreferences
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import androidx.datastore.preferences.core.MutablePreferences as AndroidXMutablePreferences
 import androidx.datastore.preferences.core.Preferences as AndroidXPreferences
 
 internal class MigrationDataStorePreferences(delegate: AndroidXPreferences) : BaseDataStorePreferences() {

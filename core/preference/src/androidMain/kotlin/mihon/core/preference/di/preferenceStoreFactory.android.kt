@@ -18,7 +18,6 @@
 package mihon.core.preference.di
 
 import android.content.Context
-import mihon.core.preference.Preferences
 import okio.Path
 import okio.Path.Companion.toOkioPath
 import org.koin.core.scope.Scope
