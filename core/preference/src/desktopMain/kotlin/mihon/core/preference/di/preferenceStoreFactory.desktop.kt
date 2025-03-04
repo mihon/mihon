@@ -26,4 +26,5 @@ internal actual fun Scope.preferenceDirectory(): Path {
     return AppDirs("Mihon", "Mihon")
         .getUserConfigDir(roaming = true)
         .toPath()
+        .resolve("preferences")
 }
