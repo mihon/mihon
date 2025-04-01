@@ -1,10 +1,10 @@
 [versions]
-android-desugar = "2.1.4"
-android-gradle = "8.8.0"
-androidx-activity-compose = "1.10.0"
+android-desugar = "2.1.5"
+android-gradle = "8.9.1"
+androidx-activity-compose = "1.10.1"
 compose-multiplatform = "1.7.3"
-kotlin = "2.1.10"
-koin = "4.0.2"
+kotlin = "2.1.20"
+koin = "4.0.4"
 ktlint = "1.5.0"
 spotless = "7.0.2"
 
